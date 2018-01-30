@@ -39,7 +39,7 @@ OS = -D_LINUX_
 DEBUG = -g
 #NUMA = -DNUMA_SUPPORT
 CFLAGS = $(DEBUG) -Wall -O3 $(OS) $(NUMA) -DMMAP_POPULATE -fstrict-aliasing -Wstrict-aliasing 
-LIBS = -lpthread -lrt
+LIBS = -pthread -lrt
 endif
 
 ifeq ($(OSTYPE),SunOS)
