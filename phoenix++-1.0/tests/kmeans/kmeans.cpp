@@ -31,8 +31,13 @@
 
 #include "map_reduce.h"
 
+
 #ifdef TBB
 #include "tbb/scalable_allocator.h"
+
+#elif defined M_ALLOC
+#include "m_alloc.h"
+
 #endif
 
 #define DEF_NUM_POINTS 100000
@@ -157,7 +162,11 @@ class KmeansMR : public MapReduce<KmeansMR, point, intptr_t, point, fixed_hash_c
 class KmeansMR : public MapReduce<KmeansMR, point, intptr_t, point, array_container<intptr_t, point, point_combiner, DEF_NUM_MEANS
 #endif
 #ifdef TBB
+#warning "use tbb"
     , tbb::scalable_allocator
+#elif defined M_ALLOC
+#warning "use m_alloc"
+    ,Mallocator
 #endif
 > >
 {
@@ -202,7 +211,12 @@ public:
         : MapReduce<KmeansMR, point, intptr_t, point, array_container<intptr_t, point, point_combiner, DEF_NUM_MEANS
 #endif
 #ifdef TBB
+#warning "use tbb"
     , tbb::scalable_allocator
+
+#elif defined M_ALLOC
+#warning "use m_alloc"
+    ,Mallocator
 #endif
     > >(), means(means)
     {}
