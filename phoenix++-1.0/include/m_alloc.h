@@ -2,7 +2,7 @@
  * Description:
  *
  * First created: 2018 Feb 05
- * Last modified: 2018 Feb 05
+ * Last modified: 2018 Feb 06
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -18,11 +18,11 @@
 template <class T>
 struct Mallocator {
   typedef T value_type;
-  Mallocator() = default;
+  Mallocator(){std::cout << "my simple allocation is called";};
   template <class U> constexpr Mallocator(const Mallocator<U>&) noexcept {}
   [[nodiscard]] T* allocate(std::size_t n) {
     if(n > std::size_t(-1) / sizeof(T)) throw std::bad_alloc();
-    std::cout<<"use my simple allocation!" << std::endl;
+    std::cerr<<"use my simple allocation!" << std::endl;
     if(auto p = static_cast<T*>(std::malloc(n*sizeof(T)))) return p;
     throw std::bad_alloc();
   }

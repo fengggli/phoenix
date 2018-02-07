@@ -32,11 +32,15 @@
 #include "map_reduce.h"
 
 
+
 #ifdef TBB
 #include "tbb/scalable_allocator.h"
 
 #elif defined M_ALLOC
 #include "m_alloc.h"
+
+#elif defined SIMPLE
+#include "simple_alloc.h"
 
 #endif
 
@@ -167,6 +171,10 @@ class KmeansMR : public MapReduce<KmeansMR, point, intptr_t, point, array_contai
 #elif defined M_ALLOC
 #warning "use m_alloc"
     ,Mallocator
+
+#elif defined SIMPLE
+    #warning "use simple"
+    , simple_allocator_namespace::simple_allocator
 #endif
 > >
 {
@@ -213,6 +221,10 @@ public:
 #ifdef TBB
 #warning "use tbb"
     , tbb::scalable_allocator
+
+#elif defined SIMPLE
+    #warning "use simple"
+    , simple_allocator_namespace::simple_allocator
 
 #elif defined M_ALLOC
 #warning "use m_alloc"

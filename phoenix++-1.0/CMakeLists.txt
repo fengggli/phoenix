@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS on)
+
 project(phoenix++)
 #add_definitions("-Wall -Wextra")
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_FLAGS "-g -Wall -O3 -D_LINUX_  -DMMAP_POPULATE -fstrict-aliasing -Wstrict-aliasing  -D__x86_64__ -pthread")
+# use -g and -O3 in different builds DEBUG/RELEASE
+set(CMAKE_CXX_FLAGS "-Wall -D_LINUX_  -DMMAP_POPULATE -fstrict-aliasing -Wstrict-aliasing  -D__x86_64__ -pthread")
 
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 
