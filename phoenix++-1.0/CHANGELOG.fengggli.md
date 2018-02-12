@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+##2018 Feb 12
+[added]:
+	1. kmeans interface now is fixed, application side will call allocator
+[TODO]:
+	1. hook with allocator
+
 ## 2018 Jan 2
 [TODO]:
     0. verify simple_alloc works, how it grows with increasing size?

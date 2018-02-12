@@ -235,10 +235,21 @@ int main(int argc, char **argv)
     parse_args(argc, argv);    
     
     // get points
+    //int* pointdata = (int *)malloc(sizeof(int) * num_points * dim);
+    //point* points = new point[num_points];
     
-    int* pointdata = (int *)malloc(sizeof(int) * num_points * dim);
-    point* points = new point[num_points];
+    int *pointdata;
+    point * points;
+
+    ALLOCATOR<int> allocator_point_data;
+    ALLOCATOR<point> allocator_points;
+    //int* pointdata = (int *)malloc(sizeof(int) * num_points * dim);
+    pointdata = allocator_point_data.allocate(num_points*dim);
+    //point* points = new point[num_points];
+    points = allocator_points.allocate(num_points);
+
     for(int i = 0; i < num_points; i++) {
+        allocator_points.construct(points+i);
         points[i] = point(&pointdata[i*dim], -1);
         points[i].generate();
     }
@@ -290,8 +301,13 @@ int main(int argc, char **argv)
     for(int i = 0; i < num_means; i++)
         means[i].dump();
 
-    free(pointdata);
-    delete [] points;
+    //free(pointdata);
+    allocator_point_data.deallocate(pointdata, num_points*dim);
+    //delete [] points;
+    for(auto i = 0; i< num_points; i++){
+        allocator_points.destroy(points+i);
+    }
+    allocator_points.deallocate(points, num_points);
     
     get_time (end);
 
