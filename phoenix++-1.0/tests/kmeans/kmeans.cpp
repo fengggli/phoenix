@@ -31,18 +31,19 @@
 
 #include "map_reduce.h"
 
-
-
 #ifdef TBB
 #include "tbb/scalable_allocator.h"
-
-#elif defined M_ALLOC
-#include "m_alloc.h"
-
-#elif defined SIMPLE
+template<typename T>
+using ALLOCATOR = tbb::scalable_allocator<T>;
+#elif defined(SIMPLE)
 #include "simple_alloc.h"
-
+template<typename T>
+using ALLOCATOR = simple_allocator_namespace::simple_allocator<T>;
+#else
+template<typename T>
+using ALLOCATOR = std::allocator<T>;
 #endif
+
 
 #define DEF_NUM_POINTS 100000
 #define DEF_NUM_MEANS 100
@@ -171,17 +172,7 @@ class KmeansMR : public MapReduce<KmeansMR, point, intptr_t, point, fixed_hash_c
 #else
 class KmeansMR : public MapReduce<KmeansMR, point, intptr_t, point, array_container<intptr_t, point, point_combiner, DEF_NUM_MEANS
 #endif
-#ifdef TBB
-#warning "use tbb"
-    , tbb::scalable_allocator
-#elif defined M_ALLOC
-#warning "use m_alloc"
-    ,Mallocator
-
-#elif defined SIMPLE
-    #warning "use simple"
-    , simple_allocator_namespace::simple_allocator
-#endif
+    , ALLOCATOR
 > >
 {
     std::vector<point> const& means;
@@ -224,18 +215,7 @@ public:
 #else
         : MapReduce<KmeansMR, point, intptr_t, point, array_container<intptr_t, point, point_combiner, DEF_NUM_MEANS
 #endif
-#ifdef TBB
-#warning "use tbb"
-    , tbb::scalable_allocator
-
-#elif defined SIMPLE
-    #warning "use simple"
-    , simple_allocator_namespace::simple_allocator
-
-#elif defined M_ALLOC
-#warning "use m_alloc"
-    ,Mallocator
-#endif
+        , ALLOCATOR
     > >(), means(means)
     {}
 };
@@ -248,11 +228,14 @@ int main(int argc, char **argv)
     double library_time = 0;
     double inter_library_time = 0;
 
+    //type_allocator<int> 
+
     get_time (begin);
     
     parse_args(argc, argv);    
     
     // get points
+    
     int* pointdata = (int *)malloc(sizeof(int) * num_points * dim);
     point* points = new point[num_points];
     for(int i = 0; i < num_points; i++) {

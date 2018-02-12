@@ -3,7 +3,7 @@
  *  a test program of std::allocator
  *
  * First created: 2018 Feb 05
- * Last modified: 2018 Feb 07
+ * Last modified: 2018 Feb 12
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -18,14 +18,18 @@
 
 #ifdef TBB
 #include "tbb/scalable_allocator.h"
-
-#elif defined M_ALLOC
-#include "m_alloc.h"
-
-#elif defined SIMPLE
+template<typename T>
+using ALLOCATOR = tbb::scalable_allocator<T>;
+#elif defined(SIMPLE)
 #include "simple_alloc.h"
-
+template<typename T>
+using ALLOCATOR = simple_allocator_namespace::simple_allocator<T>;
+#else
+template<typename T>
+using ALLOCATOR = std::allocator<T>;
 #endif
+
+
 
 
 using namespace std;
@@ -35,15 +39,7 @@ using namespace std;
  */
 TEST(AllocatorTest, Basic){
     
-#ifdef TBB
-#warning "use tbb"
-    tbb::scalable_allocator<string> alloc;
-#elif defined SIMPLE
-    #warning "use simple"
-    simple_allocator_namespace::simple_allocator<string> alloc;
-#else
-    allocator<string> alloc;
-#endif
+    ALLOCATOR<string> alloc;
 
     auto const p= alloc.allocate(5); // allocate n unconstructed strings
 
@@ -67,16 +63,7 @@ TEST(AllocatorTest, Basic){
  * test allocator copy
  */
 TEST(AllocatorTest, Copy){
-#ifdef TBB
-#warning "use tbb"
-    tbb::scalable_allocator<int> alloc;
-#elif defined SIMPLE
-    #warning "use simple"
-    simple_allocator_namespace::simple_allocator<int> alloc;
-    //Mallocator<int> alloc;
-#else
-    allocator<int> alloc;
-#endif
+    ALLOCATOR<int> alloc;
 
 
     vector<int> vi(10); // vector of 10 int
@@ -92,15 +79,7 @@ TEST(AllocatorTest, Copy){
 }
 
 TEST(AllocatorTest, Vector){
-#ifdef TBB
-#warning "use tbb"
-    vector<int,tbb::scalable_allocator<int>> vi;
-#elif defined SIMPLE
-    #warning "use simple"
-    vector<int, simple_allocator_namespace::simple_allocator<int>> vi;
-#else
-    vector<int> vi;
-#endif
+    vector<int, ALLOCATOR<int>> vi;
 
     std::cout << "vector increasing start" <<std::endl;
     for(auto i = 0; i <50; i++){
