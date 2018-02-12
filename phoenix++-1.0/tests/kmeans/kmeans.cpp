@@ -151,7 +151,13 @@ public:
      }
      static void Init(point& a) { 
          a.cluster = 0;
+#if 1
          a.d = (int*)calloc(dim, sizeof(int)); 
+#else
+         
+         Allocator<int> alloc;
+         a.d = (int *)(alloc.allocate(dim*sizeof(int))) ;
+#endif
      }
      static bool Empty(point const& a) { 
          return a.cluster == 0; 

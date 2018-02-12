@@ -3,7 +3,7 @@
  *  a test program of std::allocator
  *
  * First created: 2018 Feb 05
- * Last modified: 2018 Feb 06
+ * Last modified: 2018 Feb 07
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -38,9 +38,6 @@ TEST(AllocatorTest, Basic){
 #ifdef TBB
 #warning "use tbb"
     tbb::scalable_allocator<string> alloc;
-#elif defined M_ALLOC
-#warning "use m_alloc"
-    Mallocator<string> alloc;
 #elif defined SIMPLE
     #warning "use simple"
     simple_allocator_namespace::simple_allocator<string> alloc;
@@ -73,9 +70,6 @@ TEST(AllocatorTest, Copy){
 #ifdef TBB
 #warning "use tbb"
     tbb::scalable_allocator<int> alloc;
-#elif defined M_ALLOC
-    #warning "use simple"
-    Mallocator<int> alloc;
 #elif defined SIMPLE
     #warning "use simple"
     simple_allocator_namespace::simple_allocator<int> alloc;
@@ -96,6 +90,27 @@ TEST(AllocatorTest, Copy){
     }
     alloc.deallocate(p, vi.size()*2);
 }
+
+TEST(AllocatorTest, Vector){
+#ifdef TBB
+#warning "use tbb"
+    vector<int,tbb::scalable_allocator<int>> vi;
+#elif defined SIMPLE
+    #warning "use simple"
+    vector<int, simple_allocator_namespace::simple_allocator<int>> vi;
+#else
+    vector<int> vi;
+#endif
+
+    std::cout << "vector increasing start" <<std::endl;
+    for(auto i = 0; i <50; i++){
+        vi.push_back(i);
+        std::cout << "inserted"<< i <<std::endl;
+    }
+    std::cout << "vector increasing end" <<std::endl;
+}
+
+
 
 int main(int argc, char *argv[]){
     //mtrace();

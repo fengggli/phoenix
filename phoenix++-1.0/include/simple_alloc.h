@@ -4,7 +4,7 @@
  * https://stackoverflow.com/questions/826569/compelling-examples-of-custom-c-allocators
  *
  * First created: 2018 Feb 06
- * Last modified: 2018 Feb 06
+ * Last modified: 2018 Feb 08
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -33,21 +33,25 @@ public:
 
                 pointer allocate(size_type n, const void *hint=0)
                 {
-                    std::cerr<<"Alloc"<<n*sizeof(T) << "bytes"<< std::endl;
+#ifdef DEBUG
+                    std::cerr<<"Alloc "<<n*sizeof(T) << " bytes"<< std::endl;
+#endif
                         return std::allocator<T>::allocate(n, hint);
                 }
 
                 void deallocate(pointer p, size_type n)
                 {
-                    std::cerr << "Dealloc"<<n*sizeof(T) << "bytes"  << p << std::endl;
+#ifdef DEBUG
+                    std::cerr << "Dealloc "<<n*sizeof(T) << " bytes at "  << p << std::endl;
+#endif
                         return std::allocator<T>::deallocate(p, n);
                 }
 
-                simple_allocator() throw(): std::allocator<T>() { std::cerr << "Hello allocator!\n" <<std::endl; }
+                simple_allocator() throw(): std::allocator<T>() { std::cerr << "[simpleAllocator]: Hello allocator!\n" <<std::endl; }
                 simple_allocator(const simple_allocator &a) throw(): std::allocator<T>(a) { }
                 template <class U>                    
                 simple_allocator(const simple_allocator<U> &a) throw(): std::allocator<T>(a) { }
-                ~simple_allocator() throw() {std::cerr << "Bye allocator!\n" <<std::endl; }
+                ~simple_allocator() throw() {std::cerr << "[simpleAllocator]: Bye allocator!" <<std::endl; }
         };
 }
 

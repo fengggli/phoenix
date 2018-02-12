@@ -17,6 +17,16 @@ find_package(GTest REQUIRED)
 include_directories(GTEST_INCLUDE_DIRS)
 #target_link_libraries(binary GTest::GTest GTest::Main)
 
+# intel tbb
+find_library(TBB_LIBRARY
+        NAMES tbbmalloc
+            HINTS "/home/lifen/software/intel/compilers_and_libraries_2018.0.128/linux/tbb/lib/intel64/gcc4.7"
+            )
+    if(${TBB_LIBRARY} STREQUAL "TBB_LIBRARY-NOTFOUND")
+        message(FATAL_ERROR "cannot find tbb")
+    endif()
+
+
 include_directories(include)
 
 add_subdirectory(src)
