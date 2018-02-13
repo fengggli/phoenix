@@ -35,6 +35,7 @@ find_library(TBB_LIBRARY
     endif()
 
 include_directories(${TBB_INCLUDE_DIR})
+include_directories(allocator/)
 #target_link_libraries(binary GTest::GTest GTest::Main)
 
 

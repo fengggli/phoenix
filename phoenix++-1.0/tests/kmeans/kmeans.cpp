@@ -36,7 +36,7 @@
 template<typename T>
 using ALLOCATOR = tbb::scalable_allocator<T>;
 #elif defined(SIMPLE)
-#include "simple_alloc.h"
+#include "simple/allocator_simple.h"
 template<typename T>
 using ALLOCATOR = simple_allocator_namespace::simple_allocator<T>;
 #else

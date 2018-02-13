@@ -3,7 +3,7 @@
  *  a test program of std::allocator
  *
  * First created: 2018 Feb 05
- * Last modified: 2018 Feb 12
+ * Last modified: 2018 Feb 13
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -21,7 +21,7 @@
 template<typename T>
 using ALLOCATOR = tbb::scalable_allocator<T>;
 #elif defined(SIMPLE)
-#include "simple_alloc.h"
+#include "simple/allocator_simple.h"
 template<typename T>
 using ALLOCATOR = simple_allocator_namespace::simple_allocator<T>;
 #else
