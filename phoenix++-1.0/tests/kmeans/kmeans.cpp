@@ -39,6 +39,11 @@ using ALLOCATOR = tbb::scalable_allocator<T>;
 #include "simple/allocator_simple.h"
 template<typename T>
 using ALLOCATOR = simple_allocator_namespace::simple_allocator<T>;
+#elif defined(COPAGER)
+#include "copager/allocator_copager.h"
+template<typename T>
+using ALLOCATOR = allocator_copager_namespace::allocator_copager<T>;
+
 #else
 template<typename T>
 using ALLOCATOR = std::allocator<T>;
