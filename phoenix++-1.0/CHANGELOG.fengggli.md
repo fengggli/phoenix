@@ -10,6 +10,11 @@ Feng Li(fengggli@yahoo.com)
 ##2018 Feb 16
 [fixed]:
     1. cannot have seprate implementation file for template classes
+[added]:
+    2. add copager constructor and deconstructor
+[TODO]:
+    1. allocation function
+    2. FIND_COMANCHE.cmake?
 
 ##2018 Feb 15
 [added]:

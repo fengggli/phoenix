@@ -107,13 +107,105 @@ namespace allocator_copager_namespace
         }
     template <typename T>
         allocator_copager<T>::allocator_copager() throw(): std::allocator<T>(){ 
-        std::cerr << "[simpleAllocator]: Hello allocator!\n" <<std::endl; 
-    }
+        using namespace Component;
+            std::cerr << "[simpleAllocator]: Hello allocator!\n" <<std::endl; 
+
+            Component::IBase * comp;
+                /*
+                 * instantialize block device
+                 */
+#ifdef USE_SPDK_NVME_DEVICE
+
+                comp = Component::load_component("libcomanche-blknvme.so",
+                        Component::block_nvme_factory);
+
+            assert(comp);
+            PLOG("Block_device factory loaded OK.");
+            IBlock_device_factory * fact = (IBlock_device_factory *) comp->query_interface(IBlock_device_factory::iid());
+
+            cpu_mask_t mask;
+            mask.add_core(2);
+            _block = fact->create("8b:00.0", &mask);
+
+            assert(_block);
+            fact->release_ref();
+            PINF("Lower block-layer component loaded OK.");
+
+#else
+
+            comp = Component::load_component("libcomanche-blkposix.so",
+                    Component::block_posix_factory);
+            assert(comp);
+            PLOG("Block_device factory loaded OK.");
+
+            IBlock_device_factory * fact_blk = (IBlock_device_factory *) comp->query_interface(IBlock_device_factory::iid());
+            std::string config_string;
+            config_string = "{\"path\":\"";
+            //  config_string += "/dev/nvme0n1";
+            // config_string += "./blockfile.dat";
+            config_string += "/dev/vda";
+            // configf
+            //  config_string += "\"}";
+            config_string += "\",\"size_in_blocks\":10000}";
+            PLOG("config: %s", config_string.c_str());
+
+            _block = fact_blk->create(config_string);
+            assert(_block);
+            fact_blk->release_ref();
+            PINF("Block-layer component loaded OK (itf=%p)", _block);
+
+#endif
+
+            /* 
+             * instantiate pager
+             */
+#define NUM_PAGER_PAGES 128
+
+            assert(_block);
+
+            comp = load_component("libcomanche-pagersimple.so",
+                    Component::pager_simple_factory);
+            assert(comp);
+            IPager_factory * fact_pager = static_cast<IPager_factory *>(comp->query_interface(IPager_factory::iid()));
+            assert(fact_pager);
+            _pager = fact_pager->create(NUM_PAGER_PAGES,"unit-test-heap",_block);
+            assert(_pager);
+
+            PINF("Pager-simple component loaded OK.");
+
+            /*
+             * instantiate pmem
+             */
+              assert(_pager);
+
+              comp = load_component("libcomanche-pmempaged.so",
+                                            Component::pmem_paged_factory);
+              assert(comp);
+              IPersistent_memory_factory * fact_pmem = static_cast<IPersistent_memory_factory *>
+                (comp->query_interface(IPersistent_memory_factory::iid()));
+              assert(fact_pmem);
+              _pmem = fact_pmem->open_allocator("testowner",_pager);
+              assert(_pmem);
+              fact_pmem->release_ref();
+
+              _pmem->start();
+
+
+
+        }
 
     template <typename T>
-    allocator_copager<T>::~allocator_copager() throw() {
-        std::cerr << "[simpleAllocator]: Bye allocator!" <<std::endl; 
-    }
+        allocator_copager<T>::~allocator_copager() throw() {
+            std::cerr << "[simpleAllocator]: Bye allocator!" <<std::endl; 
+  assert(_pmem);
+  assert(_block);
+
+  _pmem->stop();
+  _pmem->release_ref();
+  _pager->release_ref();
+  _block->release_ref();
+
+        }
 }
 
 #endif
