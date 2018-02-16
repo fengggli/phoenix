@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
+include(cmake/common.cmake)
 project(phoenix++)
 #add_definitions("-Wall -Wextra")
 set(CMAKE_CXX_STANDARD 11)
@@ -41,5 +42,6 @@ include_directories(allocator/)
 
 include_directories(include)
 
+add_subdirectory(allocator/copager)
 add_subdirectory(src)
 add_subdirectory(tests)

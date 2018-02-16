@@ -20,6 +20,9 @@ Feng Li(fengggli@yahoo.com)
 [todo]:
     applications:
         replace the allocators
+    comanche:
+        cmake externel files
+        need sudo even for file blockposix
 
 ##2018 Feb 12
 [added]:
