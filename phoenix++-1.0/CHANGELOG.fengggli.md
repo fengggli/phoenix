@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+
 ##2018 Feb 15
 [added]:
 	1. all data set are extracted in data/
+    2. add cmakelist for all applications
+    3. tried all applications
+    4. a scripts to run all applications
 [note]:
     1. even "large" data set in the example is less than 2GB(histogram-large.bmp, 1.4G).
-[wip]:
-    
+    2. kmeans construct random data in memory, however for the other applications, use usually mmap to a file to get the input, for copager-allocator, each allocation will envoke a mmap systemcall
+[todo]:
+    applications:
+        replace the allocators
 
 ##2018 Feb 12
 [added]:

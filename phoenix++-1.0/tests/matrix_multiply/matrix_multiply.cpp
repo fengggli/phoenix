@@ -113,8 +113,9 @@ int main(int argc, char *argv[]) {
     
     srand( (unsigned)time( NULL ) );
 
+
     // Make sure a filename is specified
-    if (argv[1] == NULL)
+    if (argc <2 || argv[1] == NULL)
     {
         dprintf("USAGE: %s [side of matrix] [size of Row block]\n", argv[0]);
         exit(1);
