@@ -8,10 +8,19 @@ Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
 ##2018 Feb 16
+[NOTES]:
+    0. kmeans allocation is tained....
+    1. need to track all the pages(save all handlers?)
+        * can use p to hash get the  handle
+        * maintain a map to get the handler
+    2. try the copager example in phoenix source tree
+    3. make sure 
+
 [fixed]:
     1. cannot have seprate implementation file for template classes
 [added]:
     2. add copager constructor and deconstructor
+    1. example pmem example is added in source tree using /dev/vda
 [TODO]:
     1. allocation function
     2. FIND_COMANCHE.cmake?

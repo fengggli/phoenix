@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # First created: 2018 Feb 15
-# Last modified: 2018 Feb 15
+# Last modified: 2018 Feb 16
 
 # Author: Feng Li
 # email: fengggli@yahoo.com
@@ -17,7 +17,7 @@ for type in std; do
         exe_type=_$type
     fi
 
-    if [ 1 = 2 ]; then ## test
+#    if [ 1 = 2 ]; then ## test
     # kmeans
     echo ""
     echo "[info]:execute app kmeans with type type $exe_type"
@@ -51,7 +51,7 @@ for type in std; do
     num_cols=10
     grid_size=100
     $BUILD_DIR/bin/pca${exe_type} -r ${num_rows} -c $num_cols -s $grid_size
-fi
+#fi
 
     #string match
     echo ""
