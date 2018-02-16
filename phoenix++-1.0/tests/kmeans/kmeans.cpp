@@ -41,8 +41,9 @@ template<typename T>
 using ALLOCATOR = simple_allocator_namespace::simple_allocator<T>;
 #elif defined(COPAGER)
 #include "copager/allocator_copager.h"
+using namespace allocator_copager_namespace;
 template<typename T>
-using ALLOCATOR = allocator_copager_namespace::allocator_copager<T>;
+using ALLOCATOR = allocator_copager<T>;
 
 #else
 template<typename T>

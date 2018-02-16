@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+##2018 Feb 16
+[fixed]:
+    1. cannot have seprate implementation file for template classes
 
 ##2018 Feb 15
 [added]:
