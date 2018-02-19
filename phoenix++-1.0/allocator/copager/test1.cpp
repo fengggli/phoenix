@@ -19,7 +19,7 @@
 //#define USE_SPDK_NVME_DEVICE // use SPDK-NVME or POSIX-NVME
 
 #define DO_INTEGRITY
-#define DO_STRESS_MEMORY
+//#define DO_STRESS_MEMORY
 
 using namespace Component;
 
@@ -114,7 +114,7 @@ TEST_F(Pmem_paged_test, InstantiatePager)
   assert(comp);
   IPager_factory * fact = static_cast<IPager_factory *>(comp->query_interface(IPager_factory::iid()));
   assert(fact);
-  _pager = fact->create(NUM_PAGER_PAGES,"unit-test-heap",_block);
+  _pager = fact->create(NUM_PAGER_PAGES,"unit-test-heap",_block, true);
   assert(_pager);
 
   PINF("Pager-simple component loaded OK.");
@@ -148,14 +148,17 @@ struct data_t {
 #ifdef DO_INTEGRITY
 TEST_F(Pmem_paged_test, IntegrityCheck)
 {
-  size_t msize = KB(4) * 64; //MB(2) * 1;
-  size_t n_elements = msize / sizeof(uint64_t);
+  typedef uint64_t mytype;
+  size_t msize = KB(4) * 64 * 8; //MB(2) * 8;
+  size_t n_elements = msize / sizeof(mytype);
+  //size_t n_elements = 32768<<3;
+  //size_t n_elements = 32768;
   unsigned long ITERATIONS = 1000000UL;
-  uint64_t * p = nullptr;
-  size_t slab_size = n_elements * sizeof(uint64_t);
+  mytype * p = nullptr;
+  size_t slab_size = n_elements * sizeof(mytype);
   bool reused;
 
-  IPersistent_memory::pmem_t handle = _pmem->open("integrityCheckBlock", slab_size, NUMA_NODE_ANY, reused, (void*&)p);
+  IPersistent_memory::pmem_t handle = _pmem->open("integrityCheckBlock_new2", slab_size, NUMA_NODE_ANY, reused, (void*&)p);
 
   PLOG("handle: %p", handle);
   ASSERT_FALSE(p==nullptr);
@@ -169,7 +172,7 @@ TEST_F(Pmem_paged_test, IntegrityCheck)
   
   for(unsigned long e=0;e<n_elements;e++) {
     if(p[e] != 0xf) {
-      PERR("Bad 0xf - check failed!");
+      PERR("Bad 0xf - check failed! with e= %lu, value =%lu", e, p[e]);
       ASSERT_TRUE(0);
     }
   }

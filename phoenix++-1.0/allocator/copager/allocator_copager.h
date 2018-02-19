@@ -3,7 +3,7 @@
  *  a wrapper for pmem using std::allocator interface *  reference: comanche/src/components/experimental/pmem-paged/unit_test/test1.cpp
  *
  * First created: 2018 Feb 13
- * Last modified: 2018 Feb 16
+ * Last modified: 2018 Feb 19
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -100,39 +100,39 @@ namespace allocator_copager_namespace
         {
             PINF("Prepare to allocate %lu bytes, current nr_elems = %d", n*sizeof(T), nr_elems);
 
-        pointer p = nullptr;
-        size_t slab_size = n* sizeof(T);
-        bool reused;
+            pointer p = nullptr;
+            size_t slab_size = n* sizeof(T);
+            bool reused;
 #ifdef DEBUG
             std::cerr<<"Alloc "<<n*sizeof(T) << " bytes"<< std::endl;
 #endif
 
-        std::string pmem_name = "test_1";
-        //pmem_name += std::to_string(nr_elems);
-        //nr_elems+= n;
+            std::string pmem_name = "test_1";
+            //pmem_name += std::to_string(nr_elems);
+            //nr_elems+= n;
 
-        IPersistent_memory::pmem_t handle = _pmem->open(pmem_name, slab_size, NUMA_NODE_ANY, reused, (void*&)p);
+            IPersistent_memory::pmem_t handle = _pmem->open(pmem_name, slab_size, NUMA_NODE_ANY, reused, (void*&)p);
 
-  PLOG("handle: %p", handle);
-  assert(p!=nullptr);
+            PLOG("handle: %p", handle);
+            assert(p!=nullptr);
 
-  /* 0xf check */
-  for(unsigned long e=0;e<n;e++)
-    p[e] = 0xf;
+            /* 0xf check */
+            for(unsigned long e=0;e<n;e++)
+                p[e] = 0xf;
 
-  PINF("0xf writes complete. Starting check...");
-  
-  for(unsigned long e=0;e<n;e++) {
-    if(p[e] != 0xf) {
-      PERR("Bad 0xf - check failed!, value is %d", p[e]);
-      assert(0);
-    }
-  }
-  PMAJOR("> 0xf check OK!");
+            PINF("0xf writes complete. Starting check...");
+
+            for(unsigned long e=0;e<n;e++) {
+                if(p[e] != 0xf) {
+                    PERR("Bad 0xf - check failed!, value is %d", p[e]);
+                    assert(0);
+                }
+            }
+            PMAJOR("> 0xf check OK!");
 
 
-  memset(p,0,slab_size);
-  PINF("Zeroing complete.");
+            memset(p,0,slab_size);
+            PINF("Zeroing complete.");
             //return std::allocator<T>::allocate(n, hint);
             _handlers.insert(std::make_pair(p, handle));
             return p;
@@ -154,18 +154,19 @@ namespace allocator_copager_namespace
             }
             //return std::allocator<T>::deallocate(p, n);
         }
+
     template <typename T>
         allocator_copager<T>::allocator_copager() throw(): std::allocator<T>(){ 
             std::cerr << "[simpleAllocator]: Hello allocator!\n" <<std::endl; 
 
             Component::IBase * comp;
-                /*
-                 * instantialize block device
-                 */
+            /*
+             * instantialize block device
+             */
 #ifdef USE_SPDK_NVME_DEVICE
 
-                comp = Component::load_component("libcomanche-blknvme.so",
-                        Component::block_nvme_factory);
+            comp = Component::load_component("libcomanche-blknvme.so",
+                    Component::block_nvme_factory);
 
             assert(comp);
             PLOG("Block_device factory loaded OK.");
@@ -224,34 +225,33 @@ namespace allocator_copager_namespace
             /*
              * instantiate pmem
              */
-              assert(_pager);
+            assert(_pager);
 
-              comp = load_component("libcomanche-pmempaged.so",
-                                            Component::pmem_paged_factory);
-              assert(comp);
-              IPersistent_memory_factory * fact_pmem = static_cast<IPersistent_memory_factory *>
+            comp = load_component("libcomanche-pmempaged.so",
+                    Component::pmem_paged_factory);
+            assert(comp);
+            IPersistent_memory_factory * fact_pmem = static_cast<IPersistent_memory_factory *>
                 (comp->query_interface(IPersistent_memory_factory::iid()));
-              assert(fact_pmem);
-              _pmem = fact_pmem->open_allocator("testowner",_pager);
-              assert(_pmem);
-              fact_pmem->release_ref();
+            assert(fact_pmem);
+            _pmem = fact_pmem->open_allocator("testowner",_pager);
+            assert(_pmem);
+            fact_pmem->release_ref();
 
-              _pmem->start();
-
-
+            _pmem->start();
+            PINF("Pmem-pager component loaded OK.");
 
         }
 
     template <typename T>
         allocator_copager<T>::~allocator_copager() throw() {
             std::cerr << "[simpleAllocator]: Bye allocator!" <<std::endl; 
-  assert(_pmem);
-  assert(_block);
+            assert(_pmem);
+            assert(_block);
 
-  _pmem->stop();
-  _pmem->release_ref();
-  _pager->release_ref();
-  _block->release_ref();
+            _pmem->stop();
+            _pmem->release_ref();
+            _pager->release_ref();
+            _block->release_ref();
 
         }
 }

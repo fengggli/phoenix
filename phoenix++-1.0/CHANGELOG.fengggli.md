@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+##2018 Feb 19
+[NOTES]:
+    0. paged example: "Exception:async\_write: out of bounds" if n\_elemts = 300000(original is 32768)
+        * even in kmeans example, DEF_NUM_POINTS(100000-> 100000)  removes the error
+    1. pmem::open->
+                 ->Region_manager::reuse_or_allocate_region
+
+                    -> _region_table.allocate
+                        64 = _table->entries[i].size
+                        64= size_in_blocks
+                    -> return new Region_session(_lower_block_layer,
+                            id.c_str(),
+                            rd->saddr,
+                            rd->saddr + rd->size - 1);
+    2. if a slab\_size if different from the previously one shoudl give an exception!
+       eg: n_elem_sizes doubles however the same region is found, size(of blocks) remains as before
+        should use a different name for this region
+    3. serveral of the applications uses the mmap to read file. it should be equivelent for pmem allocated memory.
+        * regular mmap
+            load when needed
+        * pmem module
+            1. read all info into pmem
+            2. swap in/out during runtime
+    4. For pager\_factory::create, can pass in a force\_init=true to erase all the regions!
+
+[Question]:
+    1. test1.cpp: config_string: 10000?
+    2. region_session: for pmem test and 32768 n\_element, region session: 1~64(64\*4k blocks)
+
+
 ##2018 Feb 16
 [NOTES]:
     0. kmeans allocation is tained....
