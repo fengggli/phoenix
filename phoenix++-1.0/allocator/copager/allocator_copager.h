@@ -3,7 +3,7 @@
  *  a wrapper for pmem using std::allocator interface *  reference: comanche/src/components/experimental/pmem-paged/unit_test/test1.cpp
  *
  * First created: 2018 Feb 13
- * Last modified: 2018 Feb 19
+ * Last modified: 2018 Feb 20
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -103,20 +103,19 @@ namespace allocator_copager_namespace
             pointer p = nullptr;
             size_t slab_size = n* sizeof(T);
             bool reused;
-#ifdef DEBUG
-            std::cerr<<"Alloc "<<n*sizeof(T) << " bytes"<< std::endl;
-#endif
+            PINF("Alloc %lu bytes", n*sizeof(T));
 
             std::string pmem_name = "test_1";
             //pmem_name += std::to_string(nr_elems);
             //nr_elems+= n;
 
             IPersistent_memory::pmem_t handle = _pmem->open(pmem_name, slab_size, NUMA_NODE_ANY, reused, (void*&)p);
-
+\
             PLOG("handle: %p", handle);
             assert(p!=nullptr);
 
             /* 0xf check */
+#ifdef MUST_CHECK_PMEM
             for(unsigned long e=0;e<n;e++)
                 p[e] = 0xf;
 
@@ -130,6 +129,7 @@ namespace allocator_copager_namespace
             }
             PMAJOR("> 0xf check OK!");
 
+#endif
 
             memset(p,0,slab_size);
             PINF("Zeroing complete.");
@@ -140,9 +140,7 @@ namespace allocator_copager_namespace
     template <typename T>
         void allocator_copager<T>::deallocate(pointer p, size_type n)
         {
-#ifdef DEBUG
-            std::cerr << "Dealloc "<<n*sizeof(T) << " bytes at "  << p << std::endl;
-#endif
+            PINF("Dealloc %lu bytes at %p", n*sizeof(T), p);
             auto it = _handlers.find(p);
             if(it != _handlers.end()){
                 IPersistent_memory::pmem_t handle = it->second;
@@ -157,7 +155,7 @@ namespace allocator_copager_namespace
 
     template <typename T>
         allocator_copager<T>::allocator_copager() throw(): std::allocator<T>(){ 
-            std::cerr << "[simpleAllocator]: Hello allocator!\n" <<std::endl; 
+            PINF("[simpleAllocator]: Hello allocator!\n"); 
 
             Component::IBase * comp;
             /*
@@ -208,7 +206,7 @@ namespace allocator_copager_namespace
             /* 
              * instantiate pager
              */
-#define NUM_PAGER_PAGES 128
+#define NUM_PAGER_PAGES (2048) // support heap for 2048 pages
 
             assert(_block);
 
@@ -244,7 +242,7 @@ namespace allocator_copager_namespace
 
     template <typename T>
         allocator_copager<T>::~allocator_copager() throw() {
-            std::cerr << "[simpleAllocator]: Bye allocator!" <<std::endl; 
+            PINF("[CopagerAllocator]: Bye allocator!"); 
             assert(_pmem);
             assert(_block);
 

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+##2018 Feb 20
+[fixed]:
+    1. fix broken pager, now kmeans works
+[questions]:
+    1. if an application use multiple piece of pmem, how it should be like?
+        multiple Pmem_paged_component, backed by the same "pager", see the __global_inst_v in pmem_paged.cpp
+        Cthe all copager-allocators will have reference to the same pager!
+[TODO]:
+    1. different allocators will open different regions on the same pager
+    2. get timing for kmeans in emulated devices
+
 ##2018 Feb 19
 [NOTES]:
     0. paged example: "Exception:async\_write: out of bounds" if n\_elemts = 300000(original is 32768)
@@ -33,8 +44,8 @@ Feng Li(fengggli@yahoo.com)
     4. For pager\_factory::create, can pass in a force\_init=true to erase all the regions!
 
 [Question]:
-    1. test1.cpp: config_string: 10000?
-    2. region_session: for pmem test and 32768 n\_element, region session: 1~64(64\*4k blocks)
+    1. test1.cpp: config\_string: 10000?
+    2. region\_session: for pmem test and 32768 n\_element, region session: 1~64(64\*4k blocks)
 
 
 ##2018 Feb 16

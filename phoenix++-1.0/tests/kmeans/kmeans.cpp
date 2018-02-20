@@ -178,7 +178,7 @@ class KmeansMR : public MapReduce<KmeansMR, point, intptr_t, point, fixed_hash_c
 #else
 class KmeansMR : public MapReduce<KmeansMR, point, intptr_t, point, array_container<intptr_t, point, point_combiner, DEF_NUM_MEANS
 #endif
-    , ALLOCATOR
+    , std::allocator//ALLOCATOR
 > >
 {
     std::vector<point> const& means;
@@ -221,7 +221,7 @@ public:
 #else
         : MapReduce<KmeansMR, point, intptr_t, point, array_container<intptr_t, point, point_combiner, DEF_NUM_MEANS
 #endif
-        , ALLOCATOR
+        , std::allocator//ALLOCATOR
     > >(), means(means)
     {}
 };
@@ -248,7 +248,7 @@ int main(int argc, char **argv)
     point * points;
 
     ALLOCATOR<int> allocator_point_data;
-    ALLOCATOR<point> allocator_points;
+    std::allocator<point> allocator_points;
     //int* pointdata = (int *)malloc(sizeof(int) * num_points * dim);
     pointdata = allocator_point_data.allocate(num_points*dim);
     //point* points = new point[num_points];
