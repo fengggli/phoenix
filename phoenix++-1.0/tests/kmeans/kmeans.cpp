@@ -51,7 +51,8 @@ using ALLOCATOR = std::allocator<T>;
 #endif
 
 
-#define DEF_NUM_POINTS 100000
+//#define DEF_NUM_POINTS 100000000
+#define DEF_NUM_POINTS 10000
 #define DEF_NUM_MEANS 100
 #define DEF_DIM 3
 #define DEF_GRID_SIZE 1000

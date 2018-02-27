@@ -7,16 +7,43 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+##2018 Feb 27
+[note]: 
+    1. numbers(MB != MiB):
+        nr_huge pages : 1000*2M = 2G
+        nr_physic_pages: 2G/4k= ~500K pages (get from huge page)
+        nr_blocks: 8G/4k = 2M blocks(max heap size)
+        
+        
+
+##2018 Feb 21
+[note]:
+    1. in pmem module(with simple pager), the virtual and physical mem have the same size.
+    2. replacement policy:
+        * each time evict NO. access_num%phys_num.
+        * I assume it I have a sequential access(over and over again, there won't be fault when all pages are mapped!(verified)
+[TODO]: 
+    1. open a p\_mem\_t: 
+
 ##2018 Feb 20
 [fixed]:
     1. fix broken pager, now kmeans works
+[NOTE]:
+    1.  larger input for kmeans:
+    Simple_pager_component::create-> blk->allocate_io_buffer->phsyical memory:: allocate io_buffer_t
+    2. physical pages are the same size with slab size(where are those regions?)
+        region::_table, each entry(virt_addr start, virt_addr end, blk_itf)
+        what does the "flush"?
+    3. in the pmem\_component: the virtual memory and physical memory size are the same! window size 
 [questions]:
     1. if an application use multiple piece of pmem, how it should be like?
         multiple Pmem_paged_component, backed by the same "pager", see the __global_inst_v in pmem_paged.cpp
         Cthe all copager-allocators will have reference to the same pager!
+    2. get clear of phys pages and virtual pages!
 [TODO]:
     1. different allocators will open different regions on the same pager
     2. get timing for kmeans in emulated devices
+    3. use different build_dir of comanche for different usuage!(too much output for each physical pages mapping)
 
 ##2018 Feb 19
 [NOTES]:

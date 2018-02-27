@@ -3,7 +3,7 @@
  *  a wrapper for pmem using std::allocator interface *  reference: comanche/src/components/experimental/pmem-paged/unit_test/test1.cpp
  *
  * First created: 2018 Feb 13
- * Last modified: 2018 Feb 20
+ * Last modified: 2018 Feb 27
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -40,11 +40,7 @@
 #include <api/pager_itf.h>
 #include <api/pmem_itf.h>
 
-
-
-
 // from comanche copager-pmem
-
 
 namespace allocator_copager_namespace
 {
@@ -92,6 +88,8 @@ namespace allocator_copager_namespace
             Component::IPersistent_memory * _pmem;
             std::map<pointer,IPersistent_memory::pmem_t > _handlers; //  need to find the handler to free a piece of memory
             uint64_t nr_elems = 0; // number of elems of this allocator instance
+            static constexpr unsigned long NUM_PAGER_PAGES=16; // number of physical pages used by a heap
+            static constexpr unsigned long NUM_BLOCKS=1000; // total blocks shared by all regions(backend of heaps)
             //TODO: reused can be also in this map
     };
 
@@ -172,7 +170,7 @@ namespace allocator_copager_namespace
 
             cpu_mask_t mask;
             mask.add_core(2);
-            _block = fact->create("8b:00.0", &mask);
+            _block = fact->create("00:09.0", &mask);
 
             assert(_block);
             fact->release_ref();
@@ -189,11 +187,13 @@ namespace allocator_copager_namespace
             std::string config_string;
             config_string = "{\"path\":\"";
             //  config_string += "/dev/nvme0n1";
-            // config_string += "./blockfile.dat";
-            config_string += "/dev/vda";
+            config_string += getenv("COMANCHE_HOME");
+            config_string += "/blockfile.dat";
+            //config_string += "/dev/vda";
             // configf
             //  config_string += "\"}";
-            config_string += "\",\"size_in_blocks\":10000}";
+            config_string += ("\",\"size_in_blocks\":"+ std::to_string(NUM_BLOCKS)+"}");
+             //config_string += "\",\"size_in_blocks\":10000}";
             PLOG("config: %s", config_string.c_str());
 
             _block = fact_blk->create(config_string);
@@ -206,7 +206,6 @@ namespace allocator_copager_namespace
             /* 
              * instantiate pager
              */
-#define NUM_PAGER_PAGES (2048) // support heap for 2048 pages
 
             assert(_block);
 
@@ -215,7 +214,7 @@ namespace allocator_copager_namespace
             assert(comp);
             IPager_factory * fact_pager = static_cast<IPager_factory *>(comp->query_interface(IPager_factory::iid()));
             assert(fact_pager);
-            _pager = fact_pager->create(NUM_PAGER_PAGES,"unit-test-heap",_block);
+            _pager = fact_pager->create(NUM_PAGER_PAGES,"unit-test-heap",_block, true);
             assert(_pager);
 
             PINF("Pager-simple component loaded OK.");
