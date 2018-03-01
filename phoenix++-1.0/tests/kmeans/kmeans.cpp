@@ -31,24 +31,7 @@
 
 #include "map_reduce.h"
 
-#ifdef TBB
-#include "tbb/scalable_allocator.h"
-template<typename T>
-using ALLOCATOR = tbb::scalable_allocator<T>;
-#elif defined(SIMPLE)
-#include "simple/allocator_simple.h"
-template<typename T>
-using ALLOCATOR = simple_allocator_namespace::simple_allocator<T>;
-#elif defined(COPAGER)
-#include "copager/allocator_copager.h"
-using namespace copager_ns;
-template<typename T>
-using ALLOCATOR = allocator_copager<T>;
-
-#else
-template<typename T>
-using ALLOCATOR = std::allocator<T>;
-#endif
+#include "allocator_chooser.h"
 
 
 //#define DEF_NUM_POINTS 100000000

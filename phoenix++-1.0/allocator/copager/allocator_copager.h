@@ -198,8 +198,6 @@ namespace copager_ns
             _pager->release_ref();
 
         }
-
-
 }
 
 #endif

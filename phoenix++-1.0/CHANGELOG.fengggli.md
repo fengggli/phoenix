@@ -13,10 +13,12 @@ Feng Li(fengggli@yahoo.com)
         * ultimately, _pager will be a "service"
         * each application will open a "pmem"
         * application decide how many region it want(in my case, each type is a "region")
+    2. data fetching scripts
+    3. results now saved in separate dir
 [work]:
-    1. different datatypes
-    2. applications
-    3. add prefetch
+    [x] different datatypes
+    [ ] applications
+    [ ] add prefetch
 
 ##2018 Feb 28
 [note]:
