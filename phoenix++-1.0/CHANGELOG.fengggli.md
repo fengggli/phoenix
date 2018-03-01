@@ -7,14 +7,61 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+##2018 Mar 1
+[work]:
+    1. different datatypes
+    2. applications
+    3. add prefetch
+
+##2018 Feb 28
+[note]:
+     
+    0. thought:
+        * relation: NUM_PAGER_PAGES-num_faults-timing
+        * use nvme emulator(cannot otherwise use 4k sector size, I haven't accomplished that in qemu)
+            kmeans-small: 240pages?(512B pages instread of 4k)
+        * other replacement polocy?
+        * replacement policy:
+            cannot get access history!(only trigger by faults! if it is)
+            prefetch policy
+            mL machined? Keep track of faults happened?(run several iterations, train and procceed)
+        * Prefetch
+        * Fault happens. Read a large chunk of pages?
+        * https://www.usenix.org/legacy/event/fast07/tech/full_papers/gill/gill_html/node12.html
+
+    1. exp
+      * kmeans(small):
+        * data:(use int!)
+            10000 points(): 10000*3*4 bytes = 120 000 bytes
+            120000/4096 =29.x ~=30 pages(very slow)
+        * case(NUM_PAGER_PAGES=64, NUM_BLOCKS=1000)
+            only 30 swapping happens
+            ok
+        * case(NUM_PAGER_PAGES=16, NUM_BLOCKS=1000)
+            swapping happens all the time
+        * case(NUM_PAGER_PAGES=28, NUM_BLOCKS=1000)
+            durable: (faults happens much less frequently)
+
+      * kmeans(midum):
+            NUM_PAGER_PAGERS=1024, NUM_BLOCKS=4096
+            700000 points 8400 000 bytes
+            2050 pages
+            slow!
+
+        
 ##2018 Feb 27
 [note]: 
     1. numbers(MB != MiB):
         nr_huge pages : 1000*2M = 2G
         nr_physic_pages: 2G/4k= ~500K pages (get from huge page)
         nr_blocks: 8G/4k = 2M blocks(max heap size)
-        
-        
+    2. kmeans is slow if using FORCE\_SYNC
+    3. steps:
+        1. make kmeans robust:
+            * different acess size
+            * multiple data types
+        2. other applications
+            * test the interface correspondingly
 
 ##2018 Feb 21
 [note]:
@@ -43,7 +90,7 @@ Feng Li(fengggli@yahoo.com)
 [TODO]:
     1. different allocators will open different regions on the same pager
     2. get timing for kmeans in emulated devices
-    3. use different build_dir of comanche for different usuage!(too much output for each physical pages mapping)
+    3. use different build\_dir of comanche for different usuage!(too much output for each physical pages mapping)
 
 ##2018 Feb 19
 [NOTES]:

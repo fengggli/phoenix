@@ -3,7 +3,7 @@
  *  a wrapper for pmem using std::allocator interface *  reference: comanche/src/components/experimental/pmem-paged/unit_test/test1.cpp
  *
  * First created: 2018 Feb 13
- * Last modified: 2018 Feb 27
+ * Last modified: 2018 Mar 01
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -88,7 +88,7 @@ namespace allocator_copager_namespace
             Component::IPersistent_memory * _pmem;
             std::map<pointer,IPersistent_memory::pmem_t > _handlers; //  need to find the handler to free a piece of memory
             uint64_t nr_elems = 0; // number of elems of this allocator instance
-            static constexpr unsigned long NUM_PAGER_PAGES=16; // number of physical pages used by a heap
+            static constexpr unsigned long NUM_PAGER_PAGES=32; // number of physical pages used by a heap
             static constexpr unsigned long NUM_BLOCKS=1000; // total blocks shared by all regions(backend of heaps)
             //TODO: reused can be also in this map
     };
@@ -230,6 +230,8 @@ namespace allocator_copager_namespace
             IPersistent_memory_factory * fact_pmem = static_cast<IPersistent_memory_factory *>
                 (comp->query_interface(IPersistent_memory_factory::iid()));
             assert(fact_pmem);
+
+            /* another function to initiate pager */
             _pmem = fact_pmem->open_allocator("testowner",_pager);
             assert(_pmem);
             fact_pmem->release_ref();
