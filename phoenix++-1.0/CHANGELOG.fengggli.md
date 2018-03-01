@@ -8,6 +8,11 @@ Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
 ##2018 Mar 1
+[done]:
+    1. now pager creation is  seperated
+        * ultimately, _pager will be a "service"
+        * each application will open a "pmem"
+        * application decide how many region it want(in my case, each type is a "region")
 [work]:
     1. different datatypes
     2. applications

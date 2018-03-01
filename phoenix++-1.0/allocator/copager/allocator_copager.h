@@ -26,25 +26,34 @@
 #include <component/base.h>
 
 #include <api/components.h>
-#include <api/block_itf.h>
-#include <api/region_itf.h>
 #include <api/pager_itf.h>
 #include <api/pmem_itf.h>
 
 
 #include <memory>
 #include <iostream>
+#include <string>
 
-#include <api/block_itf.h>
-#include <api/region_itf.h>
 #include <api/pager_itf.h>
 #include <api/pmem_itf.h>
 
 // from comanche copager-pmem
 
-namespace allocator_copager_namespace
+namespace copager_ns
 {
     using namespace Component;
+
+    Component::IPager * get_shared_pager();
+    /*
+     * init_pager
+     */
+    void  init_pager();
+
+    /*
+     *
+     */
+    void destroy_pager();
+
     template <typename T>
         class allocator_copager: public std::allocator<T>
     {
@@ -83,13 +92,11 @@ namespace allocator_copager_namespace
             ~allocator_copager() throw();
         private:
 
-            Component::IBlock_device *      _block;
+            //Component::IBlock_device *      _block;
             Component::IPager *             _pager;
             Component::IPersistent_memory * _pmem;
             std::map<pointer,IPersistent_memory::pmem_t > _handlers; //  need to find the handler to free a piece of memory
             uint64_t nr_elems = 0; // number of elems of this allocator instance
-            static constexpr unsigned long NUM_PAGER_PAGES=32; // number of physical pages used by a heap
-            static constexpr unsigned long NUM_BLOCKS=1000; // total blocks shared by all regions(backend of heaps)
             //TODO: reused can be also in this map
     };
 
@@ -103,7 +110,7 @@ namespace allocator_copager_namespace
             bool reused;
             PINF("Alloc %lu bytes", n*sizeof(T));
 
-            std::string pmem_name = "test_1";
+            std::string pmem_name = std::string("slab_type_") + typeid(T).name();
             //pmem_name += std::to_string(nr_elems);
             //nr_elems+= n;
 
@@ -129,7 +136,7 @@ namespace allocator_copager_namespace
 
 #endif
 
-            memset(p,0,slab_size);
+            //memset(p,0,slab_size);
             PINF("Zeroing complete.");
             //return std::allocator<T>::allocate(n, hint);
             _handlers.insert(std::make_pair(p, handle));
@@ -155,74 +162,14 @@ namespace allocator_copager_namespace
         allocator_copager<T>::allocator_copager() throw(): std::allocator<T>(){ 
             PINF("[simpleAllocator]: Hello allocator!\n"); 
 
-            Component::IBase * comp;
-            /*
-             * instantialize block device
-             */
-#ifdef USE_SPDK_NVME_DEVICE
-
-            comp = Component::load_component("libcomanche-blknvme.so",
-                    Component::block_nvme_factory);
-
-            assert(comp);
-            PLOG("Block_device factory loaded OK.");
-            IBlock_device_factory * fact = (IBlock_device_factory *) comp->query_interface(IBlock_device_factory::iid());
-
-            cpu_mask_t mask;
-            mask.add_core(2);
-            _block = fact->create("00:09.0", &mask);
-
-            assert(_block);
-            fact->release_ref();
-            PINF("Lower block-layer component loaded OK.");
-
-#else
-
-            comp = Component::load_component("libcomanche-blkposix.so",
-                    Component::block_posix_factory);
-            assert(comp);
-            PLOG("Block_device factory loaded OK.");
-
-            IBlock_device_factory * fact_blk = (IBlock_device_factory *) comp->query_interface(IBlock_device_factory::iid());
-            std::string config_string;
-            config_string = "{\"path\":\"";
-            //  config_string += "/dev/nvme0n1";
-            config_string += getenv("COMANCHE_HOME");
-            config_string += "/blockfile.dat";
-            //config_string += "/dev/vda";
-            // configf
-            //  config_string += "\"}";
-            config_string += ("\",\"size_in_blocks\":"+ std::to_string(NUM_BLOCKS)+"}");
-             //config_string += "\",\"size_in_blocks\":10000}";
-            PLOG("config: %s", config_string.c_str());
-
-            _block = fact_blk->create(config_string);
-            assert(_block);
-            fact_blk->release_ref();
-            PINF("Block-layer component loaded OK (itf=%p)", _block);
-
-#endif
-
-            /* 
-             * instantiate pager
-             */
-
-            assert(_block);
-
-            comp = load_component("libcomanche-pagersimple.so",
-                    Component::pager_simple_factory);
-            assert(comp);
-            IPager_factory * fact_pager = static_cast<IPager_factory *>(comp->query_interface(IPager_factory::iid()));
-            assert(fact_pager);
-            _pager = fact_pager->create(NUM_PAGER_PAGES,"unit-test-heap",_block, true);
-            assert(_pager);
-
-            PINF("Pager-simple component loaded OK.");
-
-            /*
+           /*
              * instantiate pmem
              */
-            assert(_pager);
+
+            Component::IBase * comp;
+            _pager = get_shared_pager(); // we only use one pager
+            PINF("Pager at %p", _pager);
+            assert(_pager); 
 
             comp = load_component("libcomanche-pmempaged.so",
                     Component::pmem_paged_factory);
@@ -245,14 +192,14 @@ namespace allocator_copager_namespace
         allocator_copager<T>::~allocator_copager() throw() {
             PINF("[CopagerAllocator]: Bye allocator!"); 
             assert(_pmem);
-            assert(_block);
 
             _pmem->stop();
             _pmem->release_ref();
             _pager->release_ref();
-            _block->release_ref();
 
         }
+
+
 }
 
 #endif

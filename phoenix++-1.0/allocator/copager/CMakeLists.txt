@@ -6,7 +6,7 @@
 
 add_definitions(${GCC_COVERAGE_COMPILE_FLAGS} -DCONFIG_DEBUG)
 
-#add_library(allocator-pmem SHARED  allocator_copager.cc)
+add_library(allocator-copager SHARED  allocator_copager.cc)
 #add_executable(allocator-pmem-exe allocator_copager.cc)
 #target_link_libraries(allocator-pmem common numa gtest pthread dl comanche-pmempaged)
 #target_compile_features(allocator-pmem PRIVATE cxx_range_for)

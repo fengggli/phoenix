@@ -41,7 +41,7 @@ template<typename T>
 using ALLOCATOR = simple_allocator_namespace::simple_allocator<T>;
 #elif defined(COPAGER)
 #include "copager/allocator_copager.h"
-using namespace allocator_copager_namespace;
+using namespace copager_ns;
 template<typename T>
 using ALLOCATOR = allocator_copager<T>;
 
@@ -249,8 +249,13 @@ int main(int argc, char **argv)
     int *pointdata;
     point * points;
 
+
+#ifdef COPAGER
+    init_pager();
+#endif
     ALLOCATOR<int> allocator_point_data;
-    std::allocator<point> allocator_points;
+    //std::allocator<point> allocator_points;
+    ALLOCATOR<point> allocator_points;
     //int* pointdata = (int *)malloc(sizeof(int) * num_points * dim);
     pointdata = allocator_point_data.allocate(num_points*dim);
     //point* points = new point[num_points];
@@ -321,6 +326,9 @@ int main(int argc, char **argv)
 
     print_time("finalize", begin, end);
 
+#ifdef COPAGER
+    destroy_pager();
+#endif
     return 0;
 }
 
