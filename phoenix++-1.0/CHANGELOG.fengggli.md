@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
-##2018 Feb 15
+## 2018 Mar 1
+[changed]:
+	1. I won't update this repository anymore, instead upadated are avaliable in https://github.iu.edu/lifen/phoenix_copager
+
+## 2018 Feb 15
 [added]:
 	1. all data set are extracted in data/
 [note]:
@@ -15,7 +19,7 @@ Feng Li(fengggli@yahoo.com)
 [wip]:
     
 
-##2018 Feb 12
+## 2018 Feb 12
 [added]:
 	1. kmeans interface now is fixed, application side will call allocator
 [TODO]:
