@@ -10,6 +10,14 @@ Feng Li(fengggli@yahoo.com)
 ##2018 Mar 1
 [issues]:
     1. issue 1(test\_allocate)
+            ret=-1 when read size =2048
+[note]:
+    1. quick try:
+        map 20 pages manually and call "read"
+    2. I cannot use gdb to debug:
+        https://stackoverflow.com/questions/654393/examining-mmaped-addresses-using-gdb
+    3. extra copy helps. I just cannot use posix read into a io memory
+    4. I can also mmap first and then copy to my heap.(use MMAP_POPULATE?): after the mempcy all the data is backed by persistent mem: it's okay!
 
 ##2018 Mar 1
 [issues]:

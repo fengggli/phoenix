@@ -2,7 +2,7 @@
  * Description:
  *
  * First created: 2018 Mar 01
- * Last modified: 2018 Mar 01
+ * Last modified: 2018 Mar 02
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -33,7 +33,7 @@ template<typename T>
 using ALLOCATOR = std::allocator<T>;
 #endif
 
-/*#include <cstring>*/
+#include <cstring>
 //#include <iostream>
 
 

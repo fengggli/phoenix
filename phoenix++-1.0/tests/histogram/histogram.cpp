@@ -137,10 +137,13 @@ int main(int argc, char *argv[]) {
         
     ALLOCATOR<char> allocator_fdata;
     fdata = (char *)allocator_fdata.allocate(finfo.st_size);
-    //fdata = (char *)malloc (finfo.st_size);
-    CHECK_ERROR (fdata == NULL);
+    char *fdata2 = (char *)malloc (finfo.st_size);
+    CHECK_ERROR (fdata2 == NULL);
+
+    size_t io_sz = finfo.st_size;
     
-    ret = read (fd, fdata, 2048);// finfo.st_size);
+    ret = read (fd, fdata2, io_sz);// finfo.st_size);
+    std::memcpy(fdata, fdata2, io_sz);
     printf("ret = %d, finfo size = %ld\n", ret, finfo.st_size);
     CHECK_ERROR (ret != finfo.st_size);
 #endif

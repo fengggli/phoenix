@@ -36,7 +36,7 @@ TEST(AllocatorTest, ByteRead){
     struct stat finfo;
     int ret;
 
-    char *fname = "/home/lifeng/phoenix/phoenix++-1.0/data/histogram_datafiles/XING_B24.BMP";
+    char const *fname = "/home/lifeng/phoenix/phoenix++-1.0/data/histogram_datafiles/XING_B24.BMP";
     CHECK_ERROR((fd = open(fname, O_RDONLY)) < 0);
     // Get the file info (for file length)
     CHECK_ERROR(fstat(fd, &finfo) < 0);
@@ -48,8 +48,7 @@ TEST(AllocatorTest, ByteRead){
 
     memset(p, 0x0, 20*4096);
     ret = read (fd, p, 2048);// finfo.st_size);
-    printf("ret = %d, finfo size = %ld\n", ret, finfo.st_size);
-    CHECK_ERROR (ret != finfo.st_size);
+    printf("ret = %d, finfo size = %ld, read at %p\n", ret, finfo.st_size, p);
 
     CHECK_ERROR (close (fd) < 0);
 
@@ -123,6 +122,7 @@ int main(int argc, char *argv[]){
     //test_copy();
 
 #ifdef COPAGER
+    //init_pager(32000, 30000);
     init_pager();
 #endif
 
