@@ -8,7 +8,7 @@ project(phoenix++)
 set(CMAKE_CXX_STANDARD 11)
 # use -g and -O3 in different builds DEBUG/RELEASE
 set(CMAKE_CXX_FLAGS "-Wall -D_LINUX_  -DMMAP_POPULATE -fstrict-aliasing -Wstrict-aliasing  -D__x86_64__ -pthread")
-set(CMAKE_CXX_FLAGS_DEBUG "-DCONFIG_DEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -DCONFIG_DEBUG")
 
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin")
 

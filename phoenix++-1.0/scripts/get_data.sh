@@ -17,9 +17,16 @@ else
         if [ ! -f $app.tar.gz ]; then
             wget "http://csl.stanford.edu/~christos/data/$app.tar.gz"
         fi
-        echo "[INFO]: extract data for $app ... "
-        tar -xzf $app.tar.gz
+        if [ ! -d ${app}_datafiles ]; then
+            echo "[INFO]: extract data for $app ... "
+            tar -xzf $app.tar.gz
+        fi
     done
+
+
+    # additional data
+    # only support 24bit bmp
+    wget -P histogram_datafiles http://www.fileformat.info/format/bmp/sample/c192761f189c41e09485ef87e8098b9c/XING_B24.BMP
 fi
 
 

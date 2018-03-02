@@ -23,14 +23,19 @@ namespace copager_ns{
     static Component::IPager *             shared_pager = nullptr; //one pager support multiple pmem instance 
 
 
-    static constexpr unsigned long NUM_PAGER_PAGES=80; // number of physical pages used by a heap
-    static constexpr unsigned long NUM_BLOCKS=1000; // total blocks shared by all regions(backend of heaps)
+    unsigned long NUM_PAGER_PAGES=80; // number of physical pages used by a heap
+    unsigned long NUM_BLOCKS=1000; // total blocks shared by all regions(backend of heaps)
 
     Component::IPager * get_shared_pager(){
         assert(shared_pager);
         return shared_pager;
     }
 
+    void  init_pager(size_t nr_pager_pages, size_t nr_blocks){
+        NUM_PAGER_PAGES=nr_pager_pages;
+        NUM_BLOCKS=nr_blocks;
+        init_pager();
+    }
     void  init_pager(){
         Component::IBase * comp;
         /*

@@ -30,9 +30,7 @@
 
 #include "map_reduce.h"
 
-#ifdef TBB
-#include "tbb/scalable_allocator.h"
-#endif
+#include "allocator_chooser.h"
 
 #define IMG_DATA_OFFSET_POS 10
 #define BITS_PER_PIXEL_POS 28
@@ -101,6 +99,10 @@ int main(int argc, char *argv[]) {
     struct stat finfo;
     char * fname;
     timespec begin, end;
+
+#ifdef COPAGER
+    init_pager(32000, 30000);
+#endif
  
     get_time (begin);
     
@@ -133,10 +135,13 @@ int main(int argc, char *argv[]) {
 #else
     int ret;
         
-    fdata = (char *)malloc (finfo.st_size);
+    ALLOCATOR<char> allocator_fdata;
+    fdata = (char *)allocator_fdata.allocate(finfo.st_size);
+    //fdata = (char *)malloc (finfo.st_size);
     CHECK_ERROR (fdata == NULL);
     
-    ret = read (fd, fdata, finfo.st_size);
+    ret = read (fd, fdata, 2048);// finfo.st_size);
+    printf("ret = %d, finfo size = %ld\n", ret, finfo.st_size);
     CHECK_ERROR (ret != finfo.st_size);
 #endif
 
@@ -215,13 +220,18 @@ int main(int argc, char *argv[]) {
 #ifndef NO_MMAP
     CHECK_ERROR (munmap (fdata, finfo.st_size + 1) < 0);
 #else
-    free (fdata);
+    //free (fdata);
+    allocator_fdata.deallocate(fdata, finfo.st_size);
 #endif
     CHECK_ERROR (close (fd) < 0);
 
     get_time (end);
 
     print_time("finalize", begin, end);
+
+#ifdef COPAGER
+    destroy_pager();
+#endif
 
     return 0;
 }

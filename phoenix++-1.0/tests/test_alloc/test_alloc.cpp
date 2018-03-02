@@ -3,7 +3,7 @@
  *  a test program of std::allocator
  *
  * First created: 2018 Feb 05
- * Last modified: 2018 Feb 13
+ * Last modified: 2018 Mar 02
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -16,20 +16,7 @@
 #include <iostream>
 #include <vector>
 
-#ifdef TBB
-#include "tbb/scalable_allocator.h"
-template<typename T>
-using ALLOCATOR = tbb::scalable_allocator<T>;
-#elif defined(SIMPLE)
-#include "simple/allocator_simple.h"
-template<typename T>
-using ALLOCATOR = simple_allocator_namespace::simple_allocator<T>;
-#else
-template<typename T>
-using ALLOCATOR = std::allocator<T>;
-#endif
-
-
+#include "allocator_chooser.h"
 
 
 using namespace std;
@@ -97,9 +84,17 @@ int main(int argc, char *argv[]){
 /*    test_simple();*/
     //test_copy();
 
+#ifdef COPAGER
+    init_pager();
+#endif
+
     ::testing::InitGoogleTest(&argc, argv);
 
 auto r = RUN_ALL_TESTS();
+
+#ifdef COPAGER
+    destroy_pager();
+#endif
 
     //muntrace();
 

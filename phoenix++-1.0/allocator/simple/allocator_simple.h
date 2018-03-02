@@ -4,7 +4,7 @@
  * https://stackoverflow.com/questions/826569/compelling-examples-of-custom-c-allocators
  *
  * First created: 2018 Feb 06
- * Last modified: 2018 Feb 08
+ * Last modified: 2018 Mar 01
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -15,11 +15,15 @@
 #include <memory>
 #include <iostream>
 
+
 namespace simple_allocator_namespace
 {
         template <typename T>
         class simple_allocator: public std::allocator<T>
         {
+
+            private:
+            static constexpr bool option_DEBUG = true;
 public:
                 typedef size_t size_type;
                 typedef T* pointer;
@@ -33,18 +37,18 @@ public:
 
                 pointer allocate(size_type n, const void *hint=0)
                 {
-#ifdef DEBUG
+                    if(option_DEBUG){
                     std::cerr<<"Alloc "<<n*sizeof(T) << " bytes"<< std::endl;
-#endif
-                        return std::allocator<T>::allocate(n, hint);
+                    }
+                    return std::allocator<T>::allocate(n, hint);
                 }
 
                 void deallocate(pointer p, size_type n)
                 {
-#ifdef DEBUG
-                    std::cerr << "Dealloc "<<n*sizeof(T) << " bytes at "  << p << std::endl;
-#endif
-                        return std::allocator<T>::deallocate(p, n);
+                    if(option_DEBUG){
+                        std::cerr << "Dealloc "<<n*sizeof(T) << " bytes at "  << (void *)p << std::endl;
+                    }
+                    return std::allocator<T>::deallocate(p, n);
                 }
 
                 simple_allocator() throw(): std::allocator<T>() { std::cerr << "[simpleAllocator]: Hello allocator!\n" <<std::endl; }
@@ -55,5 +59,5 @@ public:
         };
 }
 
-
 #endif
+

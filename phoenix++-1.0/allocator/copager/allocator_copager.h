@@ -3,7 +3,7 @@
  *  a wrapper for pmem using std::allocator interface *  reference: comanche/src/components/experimental/pmem-paged/unit_test/test1.cpp
  *
  * First created: 2018 Feb 13
- * Last modified: 2018 Mar 01
+ * Last modified: 2018 Mar 02
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -44,6 +44,8 @@ namespace copager_ns
     using namespace Component;
 
     Component::IPager * get_shared_pager();
+
+    void  init_pager(size_t nr_pager_pages, size_t nr_blocks);
     /*
      * init_pager
      */
@@ -57,6 +59,9 @@ namespace copager_ns
     template <typename T>
         class allocator_copager: public std::allocator<T>
     {
+        private:
+            static constexpr bool option_DEBUG = false;
+            static constexpr bool MUST_CHECK_PMEM = true;
         public:
             typedef size_t size_type;
             typedef T* pointer;
@@ -103,7 +108,7 @@ namespace copager_ns
     template <typename T>
         T* allocator_copager<T>::allocate(size_type n, const void *hint)
         {
-            PINF("Prepare to allocate %lu bytes, current nr_elems = %d", n*sizeof(T), nr_elems);
+            PINF("Prepare to allocate %lu bytes, current nr_elems = %lu", n*sizeof(T), nr_elems);
 
             pointer p = nullptr;
             size_t slab_size = n* sizeof(T);
@@ -120,24 +125,26 @@ namespace copager_ns
             assert(p!=nullptr);
 
             /* 0xf check */
-#ifdef MUST_CHECK_PMEM
-            for(unsigned long e=0;e<n;e++)
-                p[e] = 0xf;
+            if(MUST_CHECK_PMEM){
+                for(unsigned long e=0;e<n;e++)
+                    memset(p+e, 0xff, sizeof(T));
 
-            PINF("0xf writes complete. Starting check...");
+                PINF("0xf writes complete. Starting check...");
 
-            for(unsigned long e=0;e<n;e++) {
-                if(p[e] != 0xf) {
-                    PERR("Bad 0xf - check failed!, value is %d", p[e]);
-                    assert(0);
+                for(unsigned long e=0;e<n;e++) {
+                    char* tmp = (char*)(&p[e]);
+                    if(*tmp != (char)(0xff)) {
+                        PERR("Bad 0xf - check failed!, value is 0x%x", *tmp);
+                        PERR("p at %p temp at %p", p, tmp);
+                        assert(0);
+                    }
                 }
+                PMAJOR("> 0xf check OK!");
             }
-            PMAJOR("> 0xf check OK!");
 
-#endif
 
             //memset(p,0,slab_size);
-            PINF("Zeroing complete.");
+            //PINF("Zeroing complete.");
             //return std::allocator<T>::allocate(n, hint);
             _handlers.insert(std::make_pair(p, handle));
             return p;

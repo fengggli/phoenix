@@ -235,6 +235,7 @@ int main(int argc, char **argv)
 
 #ifdef COPAGER
     init_pager();
+    //init_pager(32000, 30000);
 #endif
     ALLOCATOR<int> allocator_point_data;
     //std::allocator<point> allocator_points;
@@ -264,6 +265,7 @@ int main(int argc, char **argv)
     printf("KMeans: Calling MapReduce Scheduler\n");
 
     KmeansMR* mapReduce = new KmeansMR(means);
+
     while (modified == true)
     {
         get_time (ibegin);

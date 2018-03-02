@@ -8,6 +8,13 @@ Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
 ##2018 Mar 1
+[issues]:
+    1. issue 1(test\_allocate)
+
+##2018 Mar 1
+[issues]:
+    1. histogram: read 1024bytes ok/ failed at 2048bytes
+    2. trace back: 0xf check failed(fixed: char(0xff))
 [done]:
     1. now pager creation is  seperated
         * ultimately, _pager will be a "service"
@@ -15,6 +22,7 @@ Feng Li(fengggli@yahoo.com)
         * application decide how many region it want(in my case, each type is a "region")
     2. data fetching scripts
     3. results now saved in separate dir
+    4. new dataset XING\_B204, will use 29 pages: error
 [work]:
     [x] different datatypes
     [ ] applications

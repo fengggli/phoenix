@@ -33,6 +33,8 @@ template<typename T>
 using ALLOCATOR = std::allocator<T>;
 #endif
 
+/*#include <cstring>*/
+//#include <iostream>
 
 
 #endif
