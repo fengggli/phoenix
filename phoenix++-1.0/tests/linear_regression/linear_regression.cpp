@@ -30,9 +30,7 @@
 
 #include "map_reduce.h"
 
-#ifdef TBB
-#include "tbb/scalable_allocator.h"
-#endif
+#include "allocator_chooser.h"
 
 struct POINT_T {
     char x;
@@ -81,6 +79,10 @@ int main(int argc, char *argv[]) {
     
     struct timespec begin, end;
 
+#ifdef COPAGER
+    init_pager(40000, 120000);
+#endif
+
     get_time (begin);
 
     // Make sure a filename is specified
@@ -98,6 +100,20 @@ int main(int argc, char *argv[]) {
     CHECK_ERROR((fd = open(fname, O_RDONLY)) < 0);
     // Get the file info (for file length)
     CHECK_ERROR(fstat(fd, &finfo) < 0);
+
+#ifdef CUMSTOM_ALLOC
+        
+    ALLOCATOR<char> allocator_fdata;
+    size_t io_sz = finfo.st_size;
+
+    char *fdata2 = (char *)malloc (io_sz);
+
+    fdata = (char *)allocator_fdata.allocate(io_sz);
+    CHECK_ERROR((fdata2 = (char*)mmap(0, io_sz + 1, 
+        PROT_READ, MAP_PRIVATE | MAP_POPULATE, fd, 0)) == NULL);
+    std::memcpy(fdata, fdata2, io_sz);
+
+#else
 #ifndef NO_MMAP
 #ifdef MMAP_POPULATE
     // Memory map the file
@@ -116,6 +132,7 @@ int main(int argc, char *argv[]) {
 
     ret = read (fd, fdata, finfo.st_size);
     CHECK_ERROR (ret != finfo.st_size);
+#endif
 #endif
 
     int data_size = finfo.st_size / sizeof(POINT_T);
@@ -190,15 +207,23 @@ int main(int argc, char *argv[]) {
     printf("\tSYY  = %lld\n", SYY_ll);
     printf("\tSXY  = %lld\n", SXY_ll);
 
+#ifdef CUMSTOM_ALLOC
+    allocator_fdata.deallocate(fdata, finfo.st_size);
+#else
 #ifndef NO_MMAP
     CHECK_ERROR(munmap(fdata, finfo.st_size + 1) < 0);
 #else
     free (fdata);
 #endif
+#endif
     CHECK_ERROR(close(fd) < 0);
 
     get_time (end);
     print_time("finalize", begin, end);
+
+#ifdef COPAGER
+    destroy_pager();
+#endif
 
     return 0;
 }

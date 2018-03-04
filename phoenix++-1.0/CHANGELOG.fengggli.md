@@ -7,7 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+## 2018 Mar 4
+[apps]:
+    [x] kmeans
+    [x] histogram
+    [x] linear\_regession(large memory size)
+[Focus]:
+    1. io memory 256M is ok.
+    2. make paging faster?
+    3. stick with the the above three applications
+    4. design the experiment
+
 ##2018 Mar 1
+[apps]:
+    1. linear\regression:108490822 bytes: 120000pages: io memory exceed 256M(API defined memory limit 256 MB)
+[steps]:
+    1. add ifdef(CUMSTOM\_ALLOC) in source code
+    2. add copager\_init and destroy
+    3. try simple pager get the size first
 [issues]:
     1. issue 1(test\_allocate)
             ret=-1 when read size =2048
@@ -18,6 +35,7 @@ Feng Li(fengggli@yahoo.com)
         https://stackoverflow.com/questions/654393/examining-mmaped-addresses-using-gdb
     3. extra copy helps. I just cannot use posix read into a io memory
     4. I can also mmap first and then copy to my heap.(use MMAP_POPULATE?): after the mempcy all the data is backed by persistent mem: it's okay!
+    5. api defined memory need to be larger
 
 ##2018 Mar 1
 [issues]:

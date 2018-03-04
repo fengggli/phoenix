@@ -122,6 +122,19 @@ int main(int argc, char *argv[]) {
     // Get the file info (for file length)
     CHECK_ERROR(fstat(fd, &finfo) < 0);
 
+#ifdef CUMSTOM_ALLOC
+        
+    ALLOCATOR<char> allocator_fdata;
+    size_t io_sz = finfo.st_size;
+
+    char *fdata2 = (char *)malloc (io_sz);
+
+    fdata = (char *)allocator_fdata.allocate(io_sz);
+    CHECK_ERROR((fdata2 = (char*)mmap(0, io_sz + 1, 
+        PROT_READ, MAP_PRIVATE | MAP_POPULATE, fd, 0)) == NULL);
+    std::memcpy(fdata, fdata2, io_sz);
+
+#else
 #ifndef NO_MMAP
 #ifdef MMAP_POPULATE
     // Memory map the file
@@ -146,6 +159,8 @@ int main(int argc, char *argv[]) {
     std::memcpy(fdata, fdata2, io_sz);
     printf("ret = %d, finfo size = %ld\n", ret, finfo.st_size);
     CHECK_ERROR (ret != finfo.st_size);
+#endif
+
 #endif
 
     if ((fdata[0] != 'B') || (fdata[1] != 'M')) {
@@ -220,11 +235,15 @@ int main(int argc, char *argv[]) {
         prev = pix_val;
     }
 
+#ifdef CUMSTOM_ALLOC
+    allocator_fdata.deallocate(fdata, finfo.st_size);
+#else
 #ifndef NO_MMAP
     CHECK_ERROR (munmap (fdata, finfo.st_size + 1) < 0);
 #else
     //free (fdata);
-    allocator_fdata.deallocate(fdata, finfo.st_size);
+    allocator_fdata.deallocate(fdata, io_size);
+#endif
 #endif
     CHECK_ERROR (close (fd) < 0);
 

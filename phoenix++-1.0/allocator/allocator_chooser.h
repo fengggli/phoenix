@@ -11,7 +11,9 @@
 #ifndef ALLOCATOR_CHOOSER_H_
 #define ALLOCATOR_CHOOSER_H_
 
-#define NO_MMAP // if you explicitily use allocator, do not utilize the mmap in some of phoenix applications
+// all use NO_MMAP
+//#define NO_MMAP // if you explicitily use allocator, do not utilize the mmap in some of phoenix applications
+#define CUMSTOM_ALLOC 
 
 #ifdef TBB
 #include "tbb/scalable_allocator.h"
@@ -29,7 +31,7 @@ using ALLOCATOR = allocator_copager<T>;
 
 #else
 template<typename T>
-#undef NO_MMAP
+#undef CUMSTOM_ALLOC
 using ALLOCATOR = std::allocator<T>;
 #endif
 
