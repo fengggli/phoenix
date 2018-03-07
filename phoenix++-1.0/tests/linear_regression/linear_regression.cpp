@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
     struct timespec begin, end;
 
 #ifdef COPAGER
-    init_pager(40000, 120000);
+    init_pager(10000, 120000);
 #endif
 
     get_time (begin);

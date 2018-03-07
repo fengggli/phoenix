@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+## 2018 Mar 6
+[exp design]: 
+    1. random vs sequential  access: /tmp/ycmd_53723_stdout_kmcjmqsr.log
+    2. malloc test
+    3. phoenix with example
+[limitations]:
+    1. no thread supported
+    2. compare with allocators?(tcmalloc, glibcmalloc)?(compare single thread with )
+    3. should state how is it different from using linux swapping with nvme block device directly
+[new software]:
+    1. new version of qemu is installed in ${HOME}/software/install
+
 ## 2018 Mar 4
+[note]:
+    [ ]: 10000 pages 120
 [apps]:
     [x] kmeans
     [x] histogram
