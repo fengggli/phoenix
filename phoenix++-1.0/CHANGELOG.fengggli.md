@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+## 2018 Mar 7
+[qemu]:
+    1. i might try to use openchannel qemu instead
+
 ## 2018 Mar 6
 [exp design]: 
     1. random vs sequential  access: /tmp/ycmd_53723_stdout_kmcjmqsr.log
