@@ -8,7 +8,7 @@
     <partition>/machine</partition>
   </resource>
   <os>
-    <type arch='x86_64' machine='pc-i440fx-xenial'>hvm</type>
+    <type arch='x86_64' machine='q35'>hvm</type>
     <boot dev='hd'/>
     <bootmenu enable='no'/>
   </os>
@@ -32,7 +32,7 @@
     <suspend-to-disk enabled='no'/>
   </pm>
   <devices>
-    <emulator>/usr/bin/qemu-system-x86_64</emulator>
+      <emulator>/home/lifeng/software/install/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
       <source file='/var/lib/libvirt/images/ubuntu1604.qcow2'/>
@@ -110,10 +110,11 @@
     </channel>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
-    <graphics type='spice' port='5900' autoport='yes' listen='127.0.0.1'>
-      <listen type='address' address='127.0.0.1'/>
-      <image compression='off'/>
-    </graphics>
+    <!--<graphics type='spice' port='5900' autoport='yes' listen='127.0.0.1'>-->
+      <!--<listen type='address' address='127.0.0.1'/>-->
+      <!--<image compression='off'/>-->
+    <!--</graphics>-->
+    <graphics type='vnc' port='-1' autoport='yes'/>
     <sound model='ich6'>
       <alias name='sound0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
@@ -123,12 +124,12 @@
       <alias name='video0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
     </video>
-    <redirdev bus='usb' type='spicevmc'>
-      <alias name='redir0'/>
-    </redirdev>
-    <redirdev bus='usb' type='spicevmc'>
-      <alias name='redir1'/>
-    </redirdev>
+<!--    <redirdev bus='usb' type='spicevmc'>-->
+      <!--<alias name='redir0'/>-->
+    <!--</redirdev>-->
+    <!--<redirdev bus='usb' type='spicevmc'>-->
+      <!--<alias name='redir1'/>-->
+    <!--</redirdev>-->
     <memballoon model='virtio'>
       <alias name='balloon0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>

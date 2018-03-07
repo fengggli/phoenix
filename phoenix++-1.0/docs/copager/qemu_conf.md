@@ -16,4 +16,8 @@ make install
 ```
 
 ## Configuration
-I use libvirt to hypervise qemu/kvm, the configuration file is in docs/copager/ubuntu1604\_libvirt.xml
+1. I use libvirt to hypervise qemu/kvm, the configuration file is in docs/copager/ubuntu1604\_libvirt.xml
+2. I haven't sucessed to use 4k block size for qemu, descripted [here](https://stackoverflow.com/questions/49157684/setting-4k-block-size-for-nvme-in-qemu)
+
+## useful
+
