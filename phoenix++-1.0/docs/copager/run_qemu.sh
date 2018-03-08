@@ -11,6 +11,7 @@ $QEMU_EXE -m 2G \
                    -hda ${SYSTEM_IMG} \
                    -drive file=${NVME_IMG},format=raw,if=none,id=drv0 \
                    -device nvme,drive=drv0,serial=deadbeef,lver=1,lba_index=3,nlbaf=5,namespaces=1\
+                   -virtfs local,id=mdev,path=/home/lifeng/Workspace,security_model=none,mount_tag=Workspace \
                    -smp 4 \
                    -enable-kvm \
                    -net nic \

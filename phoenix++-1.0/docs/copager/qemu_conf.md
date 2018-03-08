@@ -9,8 +9,12 @@ Configuration for QEMU
 
 ```shell
 ## configure
-./configure --prefix=/home/lifeng/software/install/
 sudo apt-get install git libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev
+# virfs suport
+sudo apt-get install libcap-dev libattr1-dev
+./configure --enable-virtfs --prefix=/home/lifeng/software/install/
+# for qemu-nvme
+./configure --enable-virtfs --extra-cflags=-w --enable-linux-aio --target-list=x86_64-softmmu --enable-kvm --prefix=/home/lifeng/software/install-qemu-nvme/ &>config.lifen.log
 make -j4
 make install
 ```
