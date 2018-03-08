@@ -7,9 +7,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Last modified: 2018 Jan 26
 Feng Li(fengggli@yahoo.com)
 
+## 2018 Mar 8
+[target]:
+	1. try to finalize the 3 applications with scripts
+	2. more writing in the draft
+[notes]:
+	1. I can have multiple nvme emulator !
+	2. use fio to get the raw speed
+	3. can be backed by regular file or raw device
+[new]:
+	1. use tmpfs as nvme emulator backend gives same latency and throughput
+	2. don't have enough time, just use the file backed nvme!
+	
+
 ## 2018 Mar 7
 [qemu]:
     1. i might try to use openchannel qemu instead
+	2. now qemu can emulate nvme with 4k block
+[comanche block]:
+	1. qemu need specify cpu type
+	2. now use 4096 block same as real device
+[results]:
+	1. blk-nvme-test1:
+	```
+	[ RUN      ] Block_nvme_test.WriteThroughput
+	took 291460 cycles (121.441666 usec) per IOP
+	rate: 8.234406 KIOPS
+	```
 
 ## 2018 Mar 6
 [exp design]: 

@@ -5,17 +5,22 @@
 #openchannel qemu-nvme: https://github.com/OpenChannelSSD/qemu-nvme
 QEMU_EXE="/home/lifeng/software/install-qemu-nvme/bin/qemu-system-x86_64"  
 SYSTEM_IMG="/var/lib/libvirt/images/ubuntu1604.qcow2"
-NVME_IMG="./nvme_8G_swap.img"
+NVME_IMG0="./nvme_8G.img"
+RAM_IMG0="/home/lifeng/vms/ramdisk/nvme_4G.ramdisk"
+NVME_IMG1="./nvme_8G_swap.img"
 $QEMU_EXE -m 2G \
+				   -cpu SandyBridge \
                    -machine q35 \
                    -hda ${SYSTEM_IMG} \
-                   -drive file=${NVME_IMG},format=raw,if=none,id=drv0 \
-                   -device nvme,drive=drv0,serial=deadbeef,lver=1,lba_index=3,nlbaf=5,namespaces=1\
+                   -net nic \
+                   -net user,hostfwd=tcp::2222-:22 \
+                   -drive file=${NVME_IMG0},format=raw,if=none,id=drv0 \
+                   -device nvme,drive=drv0,serial=foo0,lver=1,lba_index=3,nlbaf=5,namespaces=1,addr=06.0 \
+				   -drive file=${NVME_IMG1},format=raw,if=none,id=drv1 \
+				   -device nvme,drive=drv1,serial=foo1,lver=1,lba_index=3,nlbaf=5,namespaces=2,addr=07.0 \
                    -virtfs local,id=mdev,path=/home/lifeng/Workspace,security_model=none,mount_tag=Workspace \
                    -smp 4 \
-                   -enable-kvm \
-                   -net nic \
-                   -net user,hostfwd=tcp::2222-:22
+                   -enable-kvm 
 
                    #-vga std \
                    #-nographic \
