@@ -8,7 +8,7 @@ SYSTEM_IMG="/var/lib/libvirt/images/ubuntu1604.qcow2"
 NVME_IMG0="./nvme_8G.img"
 RAM_IMG0="/home/lifeng/vms/ramdisk/nvme_4G.ramdisk"
 NVME_IMG1="./nvme_8G_swap.img"
-$QEMU_EXE -m 2G \
+$QEMU_EXE -m 512M \
 				   -cpu SandyBridge \
                    -machine q35 \
                    -hda ${SYSTEM_IMG} \

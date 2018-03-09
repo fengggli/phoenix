@@ -3,7 +3,7 @@
  * provide pager  to the allocator
  *
  * First created: 2018 Mar 01
- * Last modified: 2018 Mar 01
+ * Last modified: 2018 Mar 08
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -52,7 +52,7 @@ namespace copager_ns{
 
         cpu_mask_t mask;
         mask.add_core(2);
-        _block = fact->create("00:09.0", &mask);
+        _block = fact->create("00:06.0", &mask);
 
         assert(_block);
         fact->release_ref();

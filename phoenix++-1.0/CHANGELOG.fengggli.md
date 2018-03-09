@@ -9,7 +9,7 @@ Feng Li(fengggli@yahoo.com)
 
 ## 2018 Mar 8
 [target]:
-	1. try to finalize the 3 applications with scripts
+	1. try to finalize the 3 applications with scripts(swapping and copaging)
 	2. more writing in the draft
 [notes]:
 	1. I can have multiple nvme emulator !
@@ -18,6 +18,8 @@ Feng Li(fengggli@yahoo.com)
 [new]:
 	1. use tmpfs as nvme emulator backend gives same latency and throughput
 	2. don't have enough time, just use the file backed nvme!
+[result]:
+    1. use swap partition
 	
 
 ## 2018 Mar 7

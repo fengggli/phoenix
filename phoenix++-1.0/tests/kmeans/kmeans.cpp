@@ -34,8 +34,8 @@
 #include "allocator_chooser.h"
 
 
-//#define DEF_NUM_POINTS 100000000
-#define DEF_NUM_POINTS 10000
+#define DEF_NUM_POINTS 1000000
+//#define DEF_NUM_POINTS 10000
 //#define DEF_NUM_POINTS 700000
 #define DEF_NUM_MEANS 100
 #define DEF_DIM 3
@@ -234,8 +234,8 @@ int main(int argc, char **argv)
 
 
 #ifdef COPAGER
-    init_pager();
-    //init_pager(32000, 30000);
+    //init_pager();
+    init_pager(8000, 12000);
 #endif
     ALLOCATOR<int> allocator_point_data;
     //std::allocator<point> allocator_points;
