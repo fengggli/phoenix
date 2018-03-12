@@ -1,7 +1,9 @@
 
 ## Mar 8
+0. NUM_POINTS 500000 150M,
+	origin: 2.8s
 1. mount nvme as swap, ram 512M, 8G NVME
-    NUM_POINTS 1000(30Mheap)
+    NUM_POINTS 1000000(30Mheap)
 	```
 	map avg user time: 0.552    (0.551, 0.552)
 	map avg thread time: 0.552    (0.551, 0.552)
@@ -15,7 +17,7 @@
 	inter library : 0.001
 	KMeans: MapReduce Completed
 	```
-2. copager 
+	copager 
 	```
 	map avg user time: 0.548    (0.548, 0.549)
 	map avg thread time: 0.548    (0.548, 0.549)

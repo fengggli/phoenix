@@ -42,6 +42,7 @@ namespace copager_ns{
          * instantialize block device
          */
 #ifdef USE_SPDK_NVME_DEVICE
+    #warning "use NVME!"
 
         comp = Component::load_component("libcomanche-blknvme.so",
                 Component::block_nvme_factory);

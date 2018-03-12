@@ -20,8 +20,8 @@ target_link_libraries(${PROJECT_NAME}_copager   rt phoenix)
 target_compile_features(${PROJECT_NAME}_copager PRIVATE cxx_range_for)
 
 add_executable(${PROJECT_NAME}_copager_NVME ${PROJECT_NAME}.cpp)
-target_compile_definitions(${PROJECT_NAME}_copager_NVME PRIVATE "-DCOPAGER -DUSE_SPDK_NVME_DEVICE")
-target_link_libraries(${PROJECT_NAME}_copager_NVME common numa gtest pthread dl comanche-pmempaged allocator-copager)
+target_compile_definitions(${PROJECT_NAME}_copager_NVME PRIVATE "-DCOPAGER")
+target_link_libraries(${PROJECT_NAME}_copager_NVME common numa gtest pthread dl comanche-pmempaged allocator-copager-nvme)
 target_link_libraries(${PROJECT_NAME}_copager_NVME   rt phoenix)
 target_compile_features(${PROJECT_NAME}_copager_NVME PRIVATE cxx_range_for)
 
