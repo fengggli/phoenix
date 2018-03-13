@@ -2,7 +2,7 @@
 # get data 
 
 # First created: 2018 Mar 01
-# Last modified: 2018 Mar 01
+# Last modified: 2018 Mar 12
 
 # Author: Feng Li
 # email: fengggli@yahoo.com
@@ -26,7 +26,10 @@ else
 
     # additional data
     # only support 24bit bmp
+    echo "additional data..."
     wget -P histogram_datafiles http://www.fileformat.info/format/bmp/sample/c192761f189c41e09485ef87e8098b9c/XING_B24.BMP
+    
+    echo "all data is fetched..."
 fi
 
 

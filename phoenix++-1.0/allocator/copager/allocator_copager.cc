@@ -3,7 +3,7 @@
  * provide pager  to the allocator
  *
  * First created: 2018 Mar 01
- * Last modified: 2018 Mar 08
+ * Last modified: 2018 Mar 12
  *
  * Author: Feng Li
  * e-mail: fengggli@yahoo.com
@@ -17,6 +17,11 @@
 #include <api/block_itf.h>
 #include <api/block_itf.h>
 #include <api/region_itf.h>
+
+#ifndef PCI_ADDR
+#define PCI_ADDR ("00:06.0")
+#endif
+
 namespace copager_ns{
 
     static Component::IBlock_device *      _block = nullptr;
@@ -53,7 +58,7 @@ namespace copager_ns{
 
         cpu_mask_t mask;
         mask.add_core(2);
-        _block = fact->create("00:06.0", &mask);
+        _block = fact->create(PCI_ADDR, &mask);
 
         assert(_block);
         fact->release_ref();
